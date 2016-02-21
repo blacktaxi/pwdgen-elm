@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "4.2"
+sudo: false
+cache:
+  directories:
+  - node_modules
+  - elm-stuff
+before_script:
+  - npm install
+script: npm run build
+
