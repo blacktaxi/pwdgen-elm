@@ -1,4 +1,4 @@
-pwdgen [![Build Status](https://travis-ci.org/blacktaxi/pwdgen.svg)](https://travis-ci.org/blacktaxi/pwdgen)
+pwdgen [![Build Status](https://travis-ci.org/blacktaxi/pwdgen-elm.svg)](https://travis-ci.org/blacktaxi/pwdgen-elm)
 ======
 
 An [Elm](http://elm-lang.org/) "hello world" web app: generate a password from a template.
