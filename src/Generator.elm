@@ -5,7 +5,7 @@ import Dict exposing (Dict)
 import Array exposing (Array)
 import String
 
-import SecureRandom
+import Random.Secure as Random
 
 type PartOfSpeech = Noun | Adjective | Verb | Adverb
 
@@ -34,7 +34,7 @@ generate dictionary template =
         Adverb -> .adverbs
 
     choose arr =
-      SecureRandom.int 0 (Array.length arr)
+      Random.int 0 (Array.length arr)
       |> Task.mapError toString
       |> Task.map (\i ->
         Array.get i arr
@@ -43,7 +43,7 @@ generate dictionary template =
     generateOne part =
       case part of
         Verbatim x -> Task.succeed x
-        Number -> SecureRandom.int 0 9 |> Task.mapError toString |> Task.map toString
+        Number -> Random.int 0 9 |> Task.mapError toString |> Task.map toString
         Word pos ->
           getPosDict pos dictionary
           |> choose
