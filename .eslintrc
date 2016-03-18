@@ -1,12 +1,45 @@
 {
-  "extends": "eslint:recommended",
-  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": false
+  },
   "ecmaFeatures": {
     "modules": true
   },
-  "env": {
-    "es6": true,
-    "browser": true,
-    "node": true
+  "globals": {
+    "fetch": false,
+    "before": false,
+    "describe": false,
+    "expect": false,
+    "it": false,
+    "xit": false
+  },
+  "rules": {
+    "comma-dangle": [2, "never"],
+    "eqeqeq": 0,
+    "no-eval": 0,
+    "no-console": 2,
+    "no-self-compare": 2,
+    "no-unused-expressions": 0,
+    "no-unused-vars": [2, {"vars": "all", "args": "none"}],
+    "no-use-before-define": 0,
+    "wrap-iife": 2,
+    "yoda": [2, "never"],
+    "strict": [2, "global"],
+    "no-shadow": 0,
+    "no-process-exit": 0,
+    "brace-style": [2, "1tbs", { "allowSingleLine": true }],
+    "comma-style": [2, "last"],
+    "eol-last": 2,
+    "indent": [2, 2, {"SwitchCase": 1}],
+    "new-cap": [2, {newIsCap: true, capIsNew: false}],
+    "no-lonely-if": 1,
+    "no-underscore-dangle": 0,
+    "quotes": [2, "single", "avoid-escape"],
+    "semi": [2, "always"],
+    "space-before-blocks": [2, "always"],
+    "key-spacing": [2, {"beforeColon": false, "afterColon": true}],
+    "object-curly-spacing": [2, "always"],
   }
 }
