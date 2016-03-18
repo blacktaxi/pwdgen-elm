@@ -3,10 +3,24 @@ import tempfile, os, sys, shutil, json
 from subprocess import call
 
 ELM_STUFF = 'elm-stuff'
+DOWNLOAD_CACHE = os.path.join(ELM_STUFF, 'package-cache')
 DEPS_PATH = 'exact-dependencies.json'
 
 def download_to(url, fileName):
     call('curl -L -o "{fileName}" "{url}"'.format(**locals()), shell=True)
+
+def download_package(package, version, cache=True):
+    print 'Fetching package {} @ {}'.format(package, version)
+    tarball_url = 'http://github.com/{}/archive/{}.tar.gz'.format(package, version)
+    download_path = os.path.join(DOWNLOAD_CACHE, '{}-{}'.format(package.replace('/', '+'), version))
+
+    if (not cache) or (not (os.path.exists(download_path) and os.path.getsize(download_path) > 0)):
+        if not os.path.exists(DOWNLOAD_CACHE): os.makedirs(DOWNLOAD_CACHE)
+
+        print 'Downloading {}...'.format(tarball_url)
+        download_to(tarball_url, download_path)
+
+    return download_path
 
 def untargz_to(archive, dest_dir):
     call(
@@ -15,7 +29,7 @@ def untargz_to(archive, dest_dir):
 
 def retry_on_fail(times, action):
     try:
-        action()
+        return action()
     except Exception as e:
         if times > 0: return retry_on_fail(times - 1, action)
         else: raise
@@ -32,25 +46,19 @@ def install_single(package, version):
     if os.path.exists(pkg_dir):
         shutil.rmtree(pkg_dir)
 
-    fd, tmpfile = tempfile.mkstemp()
-    os.close(fd)
     tmpdir = tempfile.mkdtemp()
 
     try:
-        tarball_url = 'http://github.com/{0}/archive/{1}.tar.gz'.format(package, version)
-
-        print 'Downloading {}...'.format(tarball_url)
-        retry_on_fail(10, lambda: download_to(tarball_url, tmpfile))
+        targz_file = retry_on_fail(10, lambda: download_package(package, version))
 
         print 'Unpacking...'
-        untargz_to(tmpfile, tmpdir)
+        untargz_to(targz_file, tmpdir)
 
         print "Copying to %s" % (pkg_dir)
         # the tar.gz will consist of a single dir, named PROJECT-VERSION
         package_root = os.path.join(tmpdir, '{0}-{1}'.format(package.split('/')[1], version))
         shutil.copytree(package_root, pkg_dir)
     finally:
-        os.remove(tmpfile)
         shutil.rmtree(tmpdir)
 
 def install_packages(deps):
